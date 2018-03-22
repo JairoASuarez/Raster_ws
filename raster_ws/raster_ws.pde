@@ -84,15 +84,22 @@ void triangleRaster() {
   // here we convert v1 to illustrate the idea
   if (debug) {
     pushStyle();
-    stroke(255, 255, 0);
+    stroke(255, 255, 0, 255);
     for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
       for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
         float a, b, c;
         a = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
         b = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
         c = 1-a-b;
-        if (0 <= a && a <= 1 && 0 <= b && b <= 1 && 0 <= c && c <= 1){
+        if (0 < a && a < 1 && 0 < b && b< 1 && 0 < c && c < 1){
           point(round(x), round(y));
+          if (a < 0.01 || b < 0.01 || c < 0.01) {
+            pushStyle();
+            stroke(255, 255, 255, 100);
+            point(round(x), round(y));
+            popStyle();
+            
+          }
         }
       }
     }
@@ -137,11 +144,11 @@ void keyPressed() {
   if (key == 'd')
     debug = !debug;
   if (key == '+') {
-    n = n < 10 ? n+1 : 2;
+    n = n < 9 ? n+1 : 2;
     frame.setScaling(width/pow( 2, n));
   }
   if (key == '-') {
-    n = n > 2 ? n-1 : 10;
+    n = n >2 ? n-1 : 9;
     frame.setScaling(width/pow( 2, n));
   }
   if (key == 'r')
