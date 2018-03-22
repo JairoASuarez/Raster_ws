@@ -22,7 +22,7 @@ String renderer = P3D;
 
 void setup() {
   //use 2^n to change the dimensions
-  size(1024, 1024, renderer);
+  size(512, 512, renderer);
   scene = new Scene(this);
   if (scene.is3D())
     scene.setType(Scene.Type.ORTHOGRAPHIC);
@@ -71,12 +71,31 @@ void draw() {
 // Implement this function to rasterize the triangle.
 // Coordinates are given in the frame system which has a dimension of 2^n
 void triangleRaster() {
+  float x1, x2, x3, y1, y2, y3;
+  x1 = round(frame.coordinatesOf(v1).x());
+  x2 = round(frame.coordinatesOf(v2).x());
+  x3 = round(frame.coordinatesOf(v3).x());
+  y1 = round(frame.coordinatesOf(v1).y());
+  y2 = round(frame.coordinatesOf(v2).y());
+  y3 = round(frame.coordinatesOf(v3).y());
+  
+  
   // frame.coordinatesOf converts from world to frame
   // here we convert v1 to illustrate the idea
   if (debug) {
     pushStyle();
-    stroke(255, 255, 0, 125);
-    point(round(frame.coordinatesOf(v1).x()), round(frame.coordinatesOf(v1).y()));
+    stroke(255, 255, 0);
+    for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
+      for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
+        float a, b, c;
+        a = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
+        b = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
+        c = 1-a-b;
+        if (0 <= a && a <= 1 && 0 <= b && b <= 1 && 0 <= c && c <= 1){
+          point(round(x), round(y));
+        }
+      }
+    }
     popStyle();
   }
 }
@@ -118,11 +137,11 @@ void keyPressed() {
   if (key == 'd')
     debug = !debug;
   if (key == '+') {
-    n = n < 7 ? n+1 : 2;
+    n = n < 10 ? n+1 : 2;
     frame.setScaling(width/pow( 2, n));
   }
   if (key == '-') {
-    n = n >2 ? n-1 : 7;
+    n = n > 2 ? n-1 : 10;
     frame.setScaling(width/pow( 2, n));
   }
   if (key == 'r')
