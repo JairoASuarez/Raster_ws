@@ -86,13 +86,12 @@ void triangleRaster() {
     y2 = round(frame.coordinatesOf(v2).y());
     y3 = round(frame.coordinatesOf(v3).y());
     pushStyle();
-    stroke(255, 255, 0, 255);
+    stroke(255, 255, 0);
     for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
       for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
         a = ((y2-y3)*(x-x3) + (x3-x2)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
         b = ((y3-y1)*(x-x3) + (x1-x3)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
         c = 1-a-b;
-        //println(a, b, c);
         if(0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 && 0.0 < c && c < 1.0){
           point(round(x), round(y));
         }
@@ -113,16 +112,16 @@ void anti_aliasing(){
     y2 = round(frame.coordinatesOf(v2).y());
     y3 = round(frame.coordinatesOf(v3).y());
     pushStyle();
-    stroke(255, 255, 127, 50);
-    //stroke(100, 100, 100);
+    stroke(255, 255, 127, 100);
     for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
       for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
         a = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
         b = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
         c = 1-a-b;
         if (0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 && 0.0 < c && c < 1.0){
-          if(a < range || b < range || c < range)
+          if (a < range || b < range || c < range){
             point(round(x), round(y));
+          }
         }
       }
     }
@@ -131,6 +130,28 @@ void anti_aliasing(){
 }
 
 void shading(){
+  if(shading){
+    float x1, x2, x3, y1, y2, y3, a, b, c;
+    x1 = round(frame.coordinatesOf(v1).x());
+    x2 = round(frame.coordinatesOf(v2).x());
+    x3 = round(frame.coordinatesOf(v3).x());
+    y1 = round(frame.coordinatesOf(v1).y());
+    y2 = round(frame.coordinatesOf(v2).y());
+    y3 = round(frame.coordinatesOf(v3).y());
+    for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
+      for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
+        a = ((y2-y3)*(x-x3) + (x3-x2)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
+        b = ((y3-y1)*(x-x3) + (x1-x3)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
+        c = 1-a-b;
+        if (0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 && 0.0 < c && c < 1.0){
+          pushStyle();
+          stroke(255*a+20, 255*a+20, 0);
+          point(round(x), round(y));
+          popStyle();
+        }
+      }
+    }
+  }
 }
 
 void randomizeTriangle() {
