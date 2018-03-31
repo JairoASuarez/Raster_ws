@@ -13,6 +13,8 @@ boolean yDirection;
 int n = 4;
 
 // 2. Hints
+boolean shading = true;
+boolean aliasing = true;
 boolean triangleHint = true;
 boolean gridHint = true;
 boolean debug = true;
@@ -64,6 +66,8 @@ void draw() {
   pushStyle();
   scene.applyTransformation(frame);
   triangleRaster();
+  anti_aliasing();
+  shading();
   popStyle();
   popMatrix();
 }
@@ -71,40 +75,62 @@ void draw() {
 // Implement this function to rasterize the triangle.
 // Coordinates are given in the frame system which has a dimension of 2^n
 void triangleRaster() {
-  float x1, x2, x3, y1, y2, y3;
-  x1 = round(frame.coordinatesOf(v1).x());
-  x2 = round(frame.coordinatesOf(v2).x());
-  x3 = round(frame.coordinatesOf(v3).x());
-  y1 = round(frame.coordinatesOf(v1).y());
-  y2 = round(frame.coordinatesOf(v2).y());
-  y3 = round(frame.coordinatesOf(v3).y());
-  
-  
   // frame.coordinatesOf converts from world to frame
   // here we convert v1 to illustrate the idea
   if (debug) {
+    float x1, x2, x3, y1, y2, y3, a, b, c;
+    x1 = round(frame.coordinatesOf(v1).x());
+    x2 = round(frame.coordinatesOf(v2).x());
+    x3 = round(frame.coordinatesOf(v3).x());
+    y1 = round(frame.coordinatesOf(v1).y());
+    y2 = round(frame.coordinatesOf(v2).y());
+    y3 = round(frame.coordinatesOf(v3).y());
     pushStyle();
     stroke(255, 255, 0, 255);
     for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
       for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
-        float a, b, c;
-        a = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
-        b = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
+        a = ((y2-y3)*(x-x3) + (x3-x2)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
+        b = ((y3-y1)*(x-x3) + (x1-x3)*(y-y3)) / ((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3));
         c = 1-a-b;
-        if (0 < a && a < 1 && 0 < b && b< 1 && 0 < c && c < 1){
+        //println(a, b, c);
+        if(0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 && 0.0 < c && c < 1.0){
           point(round(x), round(y));
-          if (a < 0.01 || b < 0.01 || c < 0.01) {
-            pushStyle();
-            stroke(255, 255, 255, 100);
-            point(round(x), round(y));
-            popStyle();
-            
-          }
         }
       }
     }
     popStyle();
   }
+}
+
+void anti_aliasing(){
+  if(aliasing){
+    float range = 0.01;
+    float x1, x2, x3, y1, y2, y3, a, b, c;
+    x1 = round(frame.coordinatesOf(v1).x());
+    x2 = round(frame.coordinatesOf(v2).x());
+    x3 = round(frame.coordinatesOf(v3).x());
+    y1 = round(frame.coordinatesOf(v1).y());
+    y2 = round(frame.coordinatesOf(v2).y());
+    y3 = round(frame.coordinatesOf(v3).y());
+    pushStyle();
+    stroke(255, 255, 127, 50);
+    //stroke(100, 100, 100);
+    for(float x = -pow(2, n); x <= pow(2, n); x+=1.0){
+      for(float y = -pow(2, n); y <= pow(2,n); y+=1.0){
+        a = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
+        b = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
+        c = 1-a-b;
+        if (0.0 < a && a < 1.0 && 0.0 < b && b < 1.0 && 0.0 < c && c < 1.0){
+          if(a < range || b < range || c < range)
+            point(round(x), round(y));
+        }
+      }
+    }
+    popStyle();
+  }
+}
+
+void shading(){
 }
 
 void randomizeTriangle() {
@@ -143,6 +169,10 @@ void keyPressed() {
     triangleHint = !triangleHint;
   if (key == 'd')
     debug = !debug;
+  if (key == 'a')
+    aliasing = !aliasing;
+  if (key == 's')
+    shading = !shading;
   if (key == '+') {
     n = n < 9 ? n+1 : 2;
     frame.setScaling(width/pow( 2, n));
