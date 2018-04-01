@@ -17,16 +17,22 @@ Implemente la función ```triangleRaster()``` del sketch adjunto para tal efecto
 ## Integrantes
 
 Máximo 3.
-
+os como entrada y la capacidad 
 Complete la tabla:
 
 | Integrante | github nick |
 |------------|-------------|
-|            |             |
+| Jonathan Granados | www.github.com/joagranadosme |
+| Jairo Suarez | www.github.com/JairoASuarez |
 
 ## Discusión
 
-Describa los resultados obtenidos. Qué técnicas de anti-aliasing y shading se exploraron? Adjunte las referencias. Discuta las dificultades encontradas.
+Para realizar el anti-aliasing identificamos los puntos que hacian parte de las aristas del triangulo, es decir los bordes, a estos puntos los coloreamos con el color promedio resultante de el color del triangulo y el fondo de la pantalla.
+Para el shading lo realizamos con coordenadas baricentricas hacia un vertice del triangulo.
+Implementamos los eventos de teclas para activar/desactivar cada tarea:
+1. Tecla 'd' para debug.
+2. Tecla 'a' para anti-aliasing.
+3. Tecla 's' para shading.
 
 ## Entrega
 
